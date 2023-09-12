@@ -2,8 +2,6 @@ package org.ac.cst8277.twitterClone.entities;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class User {
 	private int id;
 	private String name;

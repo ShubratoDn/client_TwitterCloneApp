@@ -6,7 +6,9 @@ import org.ac.cst8277.twitterClone.entities.User;
 import org.ac.cst8277.twitterClone.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserRoleRepository {
 
 	private JdbcTemplate jdbcTemplate;

@@ -8,7 +8,9 @@ import org.ac.cst8277.twitterClone.entities.UserSubscribed;
 import org.ac.cst8277.twitterClone.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserSubscribeRepo {
 	
 	private JdbcTemplate jdbcTemplate;

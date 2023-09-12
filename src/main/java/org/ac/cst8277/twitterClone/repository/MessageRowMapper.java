@@ -6,7 +6,9 @@ import java.sql.SQLException;
 import org.ac.cst8277.twitterClone.entities.Message;
 import org.ac.cst8277.twitterClone.entities.User;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessageRowMapper implements RowMapper<Message> {
 
 	public Message mapRow(ResultSet rs, int rowNum) throws SQLException {

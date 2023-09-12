@@ -12,7 +12,9 @@ import org.ac.cst8277.twitterClone.services.UserServices;
 import org.ac.cst8277.twitterClone.services.UserSubscribeServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessageRepository {
 
 	private JdbcTemplate jdbcTemplate;
