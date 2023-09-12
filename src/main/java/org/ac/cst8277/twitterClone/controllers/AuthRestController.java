@@ -8,7 +8,6 @@ import org.ac.cst8277.twitterClone.payloads.ApiResponse;
 import org.ac.cst8277.twitterClone.services.UserRoleServices;
 import org.ac.cst8277.twitterClone.services.UserServices;
 
-//import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageRepository {
 
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired
@@ -25,17 +26,11 @@ public class MessageRepository {
 	@Autowired
 	private UserServices userServices;
 	
-	@Autowired
-	public MessageRepository(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-	
-	
 	
 	//add message
 	public boolean addMessage(Message msg) {		
 		String sql = "INSERT INTO `messages`(`producer_id`, `message`, `timestamp`) VALUES (?,?,?)";
-		int update = this.jdbcTemplate.update(sql, msg.getProducer().getId(), msg.getMessage(), msg.getTimestamp());
+		this.jdbcTemplate.update(sql, msg.getProducer().getId(), msg.getMessage(), msg.getTimestamp());
 		
 		return true;
 	}

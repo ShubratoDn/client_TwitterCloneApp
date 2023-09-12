@@ -10,12 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserSubscribeServices {
 
-	private final UserSubscribeRepo userSubscriberRepo;
 
 	@Autowired
-	public UserSubscribeServices(UserSubscribeRepo userSubscriberRepo) {
-		this.userSubscriberRepo = userSubscriberRepo;
-	}	
+	private UserSubscribeRepo userSubscriberRepo;
 	
 	
 	//check user subscribed

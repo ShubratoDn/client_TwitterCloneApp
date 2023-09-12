@@ -12,15 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageServices {
 	
-	private MessageRepository messageRepo;
-	
 	@Autowired
-	public MessageServices(MessageRepository messageRepo) {
-		this.messageRepo = messageRepo;
-	}
+	private MessageRepository messageRepo;	
 	
-	
-	
+		
 	//add message
 	public boolean addMessage(Message msg) {
 		return messageRepo.addMessage(msg);

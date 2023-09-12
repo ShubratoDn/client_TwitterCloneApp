@@ -11,12 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserServices {
 
-	private final UserRepository userRepo;
-
 	@Autowired
-	public UserServices(UserRepository userRepo) {
-		this.userRepo = userRepo;
-	}
+	private  UserRepository userRepo;
+
 
 	// add user
 	public boolean addUser(User user) {
