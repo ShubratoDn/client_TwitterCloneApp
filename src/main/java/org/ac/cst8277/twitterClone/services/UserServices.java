@@ -27,10 +27,17 @@ public class UserServices {
 		return userByEmail;
 	}
 
+	//get user by token
 	public User getUserByToken(String token) {
 		User userByToken = userRepo.getUserByToken(token);
 		return userByToken;
 	}
+	
+	public User getUserByTokenOrId(String data) {
+		User userByTokenOrId = userRepo.getUserByTokenOrId(data);
+		return userByTokenOrId;
+	}
+	
 	
 	// get user by id
 	public User getUserById(int id) {

@@ -103,6 +103,23 @@ public class UserRepository {
 	}
 		
 	
+	//get user by id or token
+	public User getUserByTokenOrId(String data) {
+		String sql = "select * from users where id=? OR token=?";
+		List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), data, data);
+
+		if (users.size() == 0) {
+			return null;
+		}
+
+		User user = users.get(0);
+
+		List<UserRole> roleByUser = userRoleServices.getRoleByUser(user);
+
+		user.setUserRoles(roleByUser);
+
+		return user;
+	}
 	
 	
 	//get Users by Role

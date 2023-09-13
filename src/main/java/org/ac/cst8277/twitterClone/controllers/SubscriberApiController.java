@@ -89,15 +89,14 @@ public class SubscriberApiController {
 		
 		if(userByToken == null) {
 			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "Invalid User Token"));
-		}
-		
+		}		
 		
 		User checkByRole = userServices.checkByRole(userByToken, Constant.PRODUCER_ID);		
 		if(checkByRole != null) {
 			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "You are already a Producer"));
 		}
 		
-		User addRole = userServices.addRole(user, Constant.PRODUCER_ID);
+		User addRole = userServices.addRole(userByToken, Constant.PRODUCER_ID);
 		
 		return ResponseEntity.ok(new ApiResponse("success", "Congratulations, "+addRole.getName()+"!! You are now a PRODUCER"));
 	}
