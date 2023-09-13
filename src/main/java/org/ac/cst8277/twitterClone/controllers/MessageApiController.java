@@ -46,17 +46,17 @@ public class MessageApiController {
 		
 		User userByTokenOrId = userServices.getUserByTokenOrId(message.getProducer().getToken(), message.getProducer().getId());
 		if(userByTokenOrId == null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "Invalid User Token or id"));
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse(HttpStatus.BAD_GATEWAY.toString(), "Invalid User Token or id"));
 		}		
 		
 		//checking for if the user if a producer or not
 		User checkByRole = userServices.checkByRole(userByTokenOrId, Constant.PRODUCER_ID);
 		if(checkByRole == null) {
-			return ResponseEntity.badRequest().body(new ApiResponse("error", "You are not a PRODUCER"));
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "You are not a PRODUCER"));
 		}		
 
 		if(message.getMessage().isBlank()) {
-			return ResponseEntity.badRequest().body(new ApiResponse("error", "Message Can not be empty"));
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "Message Can not be empty"));
 		}
 
         // Create a java.util.Date object from the current time
@@ -70,7 +70,7 @@ public class MessageApiController {
 		
 		messageServices.addMessage(message);		
 		
-		return ResponseEntity.ok(message);
+		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), message, "Message Send Successfully to your subscribers"));
 	}
 	
 	
@@ -83,9 +83,8 @@ public class MessageApiController {
 		
 		User subscriber = userServices.getUserByTokenOrId(subscriberIdentity);
 		if(subscriber == null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "Invalid User Token or id"));
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse(HttpStatus.BAD_GATEWAY.toString(), "Invalid User Token or id"));
 		}	
-	
 		
 		List<MessagePayload> myAllMessage = messageServices.getMyAllMessage(subscriber);
 		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), myAllMessage, "A list of my inbox"));
@@ -99,12 +98,12 @@ public class MessageApiController {
 		
 		User producer = userServices.getUserByTokenOrId(producerIdentity);
 		if(producer == null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "Invalid Producer Token or id"));
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse(HttpStatus.BAD_GATEWAY.toString(), "Invalid Producer Token or id"));
 		}	
 		
 		User checkByRole = userServices.checkByRole(producer, Constant.PRODUCER_ID);
 		if(checkByRole == null) {
-			return ResponseEntity.badRequest().body(new ApiResponse("error", "You are not a PRODUCER"));
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "You are not a PRODUCER"));
 		}	
 		
 		MessagePayload messagesOfProducer = messageServices.getMessagesOfProducer(producer);
@@ -127,19 +126,18 @@ public class MessageApiController {
 	
 		
 		if(subscriber_id == producer_id) {
-			return ResponseEntity.badRequest().body(new ApiResponse("error", "Invalid Request"));
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "Invalid Request"));
 		}
 		
 		
 		UserSubscribed checkUserSubscribed = userSubscribeServices.checkUserSubscribed(subscriber, producer);
 		if(checkUserSubscribed == null) {
-			return ResponseEntity.badRequest().body(new ApiResponse("error", "You are not subscribed to this PRODUCER"));
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "You are not subscribed to this PRODUCER"));
 		}
 		
 		MessagePayload messagesOfProducer = messageServices.getMessagesOfProducer(producer);
 		
-		return ResponseEntity.ok(messagesOfProducer);
-		
+		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), messagesOfProducer, "A list of all messages of the Producer"));
 	}
 	
 	
@@ -156,13 +154,13 @@ public class MessageApiController {
 		User user = userServices.getUserByTokenOrId(subscriberIdOrToken);
 		
 		if(user == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("error", "Invalid Subscriber"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.toString(), "Invalid Subscriber"));
 		}
 		
 		
 		List<Message> searchByMessage = messageServices.searchByMessage(user, searchQuery);		
 		if(searchByMessage == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("error", "Nothing found with this query"));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(HttpStatus.NOT_FOUND.toString(), "Nothing found with this query"));
 		}
 
 

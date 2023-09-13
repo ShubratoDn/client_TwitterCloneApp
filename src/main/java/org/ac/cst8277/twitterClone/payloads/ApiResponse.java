@@ -2,23 +2,23 @@ package org.ac.cst8277.twitterClone.payloads;
 
 public class ApiResponse {
 
-	private String messageStatus;
+	private String code;
 	private String message;
 	
 	public ApiResponse() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ApiResponse(String messageStatus, String message) {
+	public ApiResponse(String code, String message) {
 		super();
-		this.messageStatus = messageStatus;
+		this.code = code;
 		this.message = message;
 	}
-	public String getMessageStatus() {
-		return messageStatus;
+	public String getcode() {
+		return code;
 	}
-	public void setMessageStatus(String messageStatus) {
-		this.messageStatus = messageStatus;
+	public void setcode(String code) {
+		this.code = code;
 	}
 	public String getMessage() {
 		return message;

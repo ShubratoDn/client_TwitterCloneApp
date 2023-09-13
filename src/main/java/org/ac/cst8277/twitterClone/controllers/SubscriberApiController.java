@@ -35,8 +35,8 @@ public class SubscriberApiController {
 	// get all producer list
 	@GetMapping("/get-producers")
 	public ResponseEntity<?> getAllProducer() {
-		List<User> usersByRole = userServices.getUsersByRole("producer");
-		return ResponseEntity.ok(usersByRole);
+		List<User> usersByRole = userServices.getUsersByRole("producer");		
+		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), usersByRole, "All producers List"));
 	}
 
 	
@@ -44,10 +44,9 @@ public class SubscriberApiController {
 	@GetMapping("/get-subscribers")
 	public ResponseEntity<?> getAllSubscribers() {
 		List<User> usersByRole = userServices.getUsersByRole("subscriber");
-		return ResponseEntity.ok(usersByRole);
+		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), usersByRole, "All Subscriber List"));
 	}
-	
-	
+		
 	
 	//--
 	//get my subscribed producer
@@ -119,16 +118,16 @@ public class SubscriberApiController {
 		
 		User subscriber = userServices.getUserByTokenOrId(subscribePayload.getSubscriber());
 		if(subscriber == null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","Invalid Subscriber"));
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse(HttpStatus.BAD_GATEWAY.toString(),"Invalid Subscriber"));
 		}		
 		User producer = userServices.getUserByTokenOrId(subscribePayload.getProducer());
 		if(producer == null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","Invalid Producer"));
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse(HttpStatus.BAD_GATEWAY.toString(),"Invalid Producer"));
 		}	
 		
 		
 		if(subscriber.getId() == producer.getId()) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","You can not subscribe to yourself"));
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse(HttpStatus.BAD_GATEWAY.toString(),"You can not subscribe to yourself"));
 		}
 		
 		
@@ -136,7 +135,7 @@ public class SubscriberApiController {
 		//CHECKING IF THE PRODUCER IS valid				
 		User checkByRole = userServices.checkByRole(producer, Constant.PRODUCER_ID);
 		if(checkByRole == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("error","This user is not a Producer"));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(),"This user is not a Producer"));
 		}
 		
 		
@@ -144,7 +143,7 @@ public class SubscriberApiController {
 		//checking if the user is subscribed to the producer
 		UserSubscribed checkUserSubscribed = userSubscribeServices.checkUserSubscribed(subscriber, producer);
 		if(checkUserSubscribed != null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","Already Subscribed!"));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(),"Already Subscribed!"));
 		}
 		
 		
@@ -181,14 +180,14 @@ public class SubscriberApiController {
 		//checking if the given producer's id is Actually a producer
 		User checkByRole = userServices.checkByRole(producer, Constant.PRODUCER_ID);
 		if(checkByRole == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("error","Given producer's id/token varification failed"));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(),"Given producer's id/token varification failed"));
 		}
 		
 		
 		// checking if the user is subscribed to the producer
 		UserSubscribed checkUserSubscribed = userSubscribeServices.checkUserSubscribed(subscriber, producer);
 		if (checkUserSubscribed == null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "You are not a subscriber of Producer \"" + producer.getName() +"\""));
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse(HttpStatus.BAD_GATEWAY.toString(), "You are not a subscriber of Producer \"" + producer.getName() +"\""));
 		}
 		
 		userSubscribeServices.unsubscribe(subscriber, producer);

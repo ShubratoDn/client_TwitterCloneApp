@@ -26,14 +26,13 @@ public class AuthRestController {
 	// register user
 	@PostMapping(value = "/register")
 	public ResponseEntity<?> registerUser(@RequestBody User user) {
-
 		if (user.getName().isBlank() || user.getEmail().isBlank() || user.getPassword().isBlank()) {
-			return ResponseEntity.badRequest().body(new ApiResponse("error", "Insert all field"));
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "Insert all field"));
 		}
 
 		User userByEmail = userServices.getUserByEmail(user.getEmail());
 		if (userByEmail != null) {
-			return ResponseEntity.badRequest().body(new ApiResponse("error", "Email already exits"));
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "Email already exits"));
 		}
 
 		if (user.getPassword().length() < 4) {
@@ -44,11 +43,11 @@ public class AuthRestController {
 
 		userServices.addUser(user);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("success", "Register Successfull"));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(HttpStatus.OK.toString(), "Register Successfull"));
 	}
 	
 	
-	
+	//--
 	//get user by token or id
 	@GetMapping("/user/{tokenOrId}")
 	public ResponseEntity<?> getUserByTokenOrID(@PathVariable String tokenOrId){
