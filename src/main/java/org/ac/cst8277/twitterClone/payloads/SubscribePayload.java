@@ -2,25 +2,30 @@ package org.ac.cst8277.twitterClone.payloads;
 
 public class SubscribePayload {
 
-	private int subscriber;
-	private int producer;
+	private String subscriber;
+	private String producer;
 	
 	public SubscribePayload() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public int getSubscriber() {
+
+	public String getSubscriber() {
 		return subscriber;
 	}
-	public void setSubscriber(int subscriber) {
+
+	public void setSubscriber(String subscriber) {
 		this.subscriber = subscriber;
 	}
-	public int getProducer() {
+
+	public String getProducer() {
 		return producer;
 	}
-	public void setProducer(int producer) {
+
+	public void setProducer(String producer) {
 		this.producer = producer;
 	}
+	
+
 	
 	
 	

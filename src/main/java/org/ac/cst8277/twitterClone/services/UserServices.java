@@ -38,6 +38,10 @@ public class UserServices {
 		return userByTokenOrId;
 	}
 	
+	public User getUserByTokenOrId(String token, int id) {
+		User userByTokenOrId = userRepo.getUserByTokenOrId(token, id);
+		return userByTokenOrId;
+	}
 	
 	// get user by id
 	public User getUserById(int id) {

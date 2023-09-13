@@ -111,27 +111,28 @@ public class SubscriberApiController {
 
 	
 	
+	//--
 	//subscribe to producer
 	@PostMapping("/subscribe")
 	public ResponseEntity<?> subscribeToProducer(@RequestBody SubscribePayload subscribePayload){
 		
-		//		
-		if(subscribePayload.getProducer() == subscribePayload.getSubscriber()) {
+		User subscriber = userServices.getUserByTokenOrId(subscribePayload.getSubscriber());
+		if(subscriber == null) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","Invalid Subscriber"));
+		}		
+		User producer = userServices.getUserByTokenOrId(subscribePayload.getProducer());
+		if(producer == null) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","Invalid Producer"));
+		}	
+		
+		
+		if(subscriber.getId() == producer.getId()) {
 			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","You can not subscribe to yourself"));
 		}
 		
-		//checking if the SUBSCRIBER is valid
-		User subscriber = new User();
-		subscriber.setId(subscribePayload.getSubscriber());
-		User userById = userServices.getUserById(subscriber.getId());
-		if(userById == null) {
-			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error","Invalid Subscriber"));
-		}
 		
-		
-		//CHECKING IF THE PRODUCER IS valid
-		User producer = new User();
-		producer.setId(subscribePayload.getProducer());		
+				
+		//CHECKING IF THE PRODUCER IS valid				
 		User checkByRole = userServices.checkByRole(producer, Constant.PRODUCER_ID);
 		if(checkByRole == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("error","This user is not a Producer"));
@@ -147,8 +148,7 @@ public class SubscriberApiController {
 		
 		
 		//Subscribing to producer
-		UserSubscribed addSubscription = userSubscribeServices.addSubscription(subscriber, producer);
-		
+		UserSubscribed addSubscription = userSubscribeServices.addSubscription(subscriber, producer);		
 		
 		
 		return ResponseEntity.ok(new ApiResponse("success", "Successfully subscribed to Producer " + addSubscription.getProducer().getName()));
