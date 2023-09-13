@@ -7,6 +7,7 @@ public class User {
 	private String name;
 	private String email;
 	private String password;
+	private String token;
 	
 	private List<UserRole> userRoles;
 	
@@ -14,9 +15,6 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
-
-
 	public List<UserRole> getUserRoles() {
 		return userRoles;
 	}
@@ -32,6 +30,14 @@ public class User {
 
 
 	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	public int getId() {
 		return id;
 	}

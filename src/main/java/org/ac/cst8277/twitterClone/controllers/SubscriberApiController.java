@@ -85,8 +85,13 @@ public class SubscriberApiController {
 	@PostMapping("/be-producer")
 	public ResponseEntity<?> beProducer(@RequestBody User user){
 		
-		User checkByRole = userServices.checkByRole(user, Constant.PRODUCER_ID);
+		User userById = userServices.getUserById(user.getId());
+		if(userById == null) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "Invalid User Id"));
+		}
 		
+		
+		User checkByRole = userServices.checkByRole(user, Constant.PRODUCER_ID);		
 		if(checkByRole != null) {
 			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "You are already a Producer"));
 		}

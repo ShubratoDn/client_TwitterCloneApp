@@ -2,6 +2,7 @@ package org.ac.cst8277.twitterClone.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.ac.cst8277.twitterClone.entities.User;
 import org.ac.cst8277.twitterClone.entities.UserRole;
@@ -14,24 +15,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserRepository {
 
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
 
 	@Autowired
 	private UserRoleServices userRoleServices;
 	
-	@Autowired
-	public UserRepository(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-	
-	
 	
 	
 	//add user
 	public boolean addUser(User user) {
-		String sql = "INSERT INTO `users`(`name`, `email`, `password`) VALUES (?,?,?)";		
-		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword());
+		
+		user.setToken(UUID.randomUUID().toString());
+		
+		String sql = "INSERT INTO `users`(`name`, `email`, `password`, `token`) VALUES (?,?,?,?)";		
+		jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getToken());
 		
 		// Get the added user ID
 		String sqlGetId = "SELECT id FROM users WHERE name = ? and email = ?";
@@ -119,7 +118,7 @@ public class UserRepository {
 	
 	//check by role
 	public User checkByRole(User user, int role) {
-		String sql = "SELECT u.id, u.name, u.email FROM users u JOIN user_and_role uar ON u.id = uar.user_id JOIN user_role ur ON uar.role_id = ur.id WHERE u.id = ? AND ur.id = ? ";
+		String sql = "SELECT u.id, u.name, u.email, u.token FROM users u JOIN user_and_role uar ON u.id = uar.user_id JOIN user_role ur ON uar.role_id = ur.id WHERE u.id = ? AND ur.id = ? ";
 
 		List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), user.getId(), role);
 
@@ -137,14 +136,13 @@ public class UserRepository {
 	
 	
 	
-	public User addRole(User user, int role){
-	String sql = "INSERT INTO `user_and_role`(`user_id`, `role_id`) VALUES (?, ?)";
-	jdbcTemplate.update(sql, user.getId(), role);
-	
-	User userById = this.getUserById(user.getId());
-	
-	return userById;
-}
+	public User addRole(User user, int role) {
+		String sql = "INSERT INTO `user_and_role`(`user_id`, `role_id`) VALUES (?, ?)";
+		jdbcTemplate.update(sql, user.getId(), role);
+		User userById = this.getUserById(user.getId());
+
+		return userById;
+	}
 	
 	
 }
