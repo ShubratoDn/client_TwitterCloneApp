@@ -66,7 +66,7 @@ public class UserSubscribeRepo {
 	
 	//get my subscribers
 		public List<User> getMySubscriber(User producer){
-			String sql = "SELECT u.id, u.name, u.email FROM users u JOIN user_subscribed us ON u.id = us.subscriber_id WHERE us.producer_id = ?";
+			String sql = "SELECT u.id, u.name, u.email, u.token FROM users u JOIN user_subscribed us ON u.id = us.subscriber_id WHERE us.producer_id = ?";
 			List<User> query = jdbcTemplate.query(sql, new UserRowMapper(), producer.getId());
 			
 			List<User> users = new ArrayList<User>();

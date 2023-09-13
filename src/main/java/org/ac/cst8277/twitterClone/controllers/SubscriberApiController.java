@@ -5,6 +5,7 @@ import java.util.List;
 import org.ac.cst8277.twitterClone.entities.User;
 import org.ac.cst8277.twitterClone.entities.UserSubscribed;
 import org.ac.cst8277.twitterClone.payloads.ApiResponse;
+import org.ac.cst8277.twitterClone.payloads.ResponsePayload;
 import org.ac.cst8277.twitterClone.payloads.SubscribePayload;
 import org.ac.cst8277.twitterClone.services.Constant;
 import org.ac.cst8277.twitterClone.services.UserServices;
@@ -47,35 +48,41 @@ public class SubscriberApiController {
 	
 	
 	
-	
-	//get all of my PRODUCERS
-	@GetMapping("/my-subscriptions/{subscriber_id}")
-	public ResponseEntity<?> getMyProducers(@PathVariable int subscriber_id){
-		User user = new User();
-		user.setId(subscriber_id);
-		
+	//--
+	//get my subscribed producer
+	@GetMapping("/my-subscriptions/{subscriberIdOrToken}")
+	public ResponseEntity<?> getMyProducers(@PathVariable("subscriberIdOrToken") String data){		
+		User user = userServices.getUserByTokenOrId(data);
+		if(user == null) {
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "User id or token not valid"));
+		}
+
 		List<UserSubscribed> mySubscriptions = userSubscribeServices.getMySubscriptions(user);
 		
-		return ResponseEntity.ok(mySubscriptions);
+		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), mySubscriptions, "List of my all subscribed producers"));
 	}
 	
 	
 
+	//--
 	//get my subscriber
-	@GetMapping("/my-subscribers/producer/{producer_id}")
-	public ResponseEntity<?> getMySubscribers(@PathVariable int producer_id){		
+	@GetMapping("/my-subscribers/producer/{producerIdOrToken}")
+	public ResponseEntity<?> getMySubscribers(@PathVariable("producerIdOrToken") String data){		
 		
-		User user = userServices.getUserById(producer_id);		
-		User checkByRole = userServices.checkByRole(user, Constant.PRODUCER_ID);
+		User user = userServices.getUserByTokenOrId(data);
+		if(user == null) {
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "User id or token not valid"));
+		}
 		
+		User checkByRole = userServices.checkByRole(user, Constant.PRODUCER_ID);		
 		
 		if(checkByRole == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("error", "You are not a PRODUCER"));
 		}
 		
-		List<User> mySubscriber = userSubscribeServices.getMySubscriber(checkByRole);
+		List<User> mySubscriber = userSubscribeServices.getMySubscriber(user);
 		
-		return ResponseEntity.ok(mySubscriber);
+		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), mySubscriber, "List of my Subscribers"));
 	}
 	
 	

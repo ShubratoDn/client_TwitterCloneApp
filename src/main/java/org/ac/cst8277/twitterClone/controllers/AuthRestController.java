@@ -1,12 +1,8 @@
 package org.ac.cst8277.twitterClone.controllers;
 
-import java.util.List;
-
 import org.ac.cst8277.twitterClone.entities.User;
-import org.ac.cst8277.twitterClone.entities.UserRole;
 import org.ac.cst8277.twitterClone.payloads.ApiResponse;
 import org.ac.cst8277.twitterClone.payloads.ResponsePayload;
-import org.ac.cst8277.twitterClone.services.UserRoleServices;
 import org.ac.cst8277.twitterClone.services.UserServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +22,6 @@ public class AuthRestController {
 	@Autowired
 	private UserServices userServices;
 
-	@Autowired
-	private UserRoleServices userRoleServices;
 
 	// register user
 	@PostMapping(value = "/register")
@@ -55,30 +49,11 @@ public class AuthRestController {
 	
 	
 	
-	
 	//get user by token or id
 	@GetMapping("/user/{tokenOrId}")
 	public ResponseEntity<?> getUserByTokenOrID(@PathVariable String tokenOrId){
 		User userByTokenOrId = userServices.getUserByTokenOrId(tokenOrId);
 		return ResponseEntity.ok(new ResponsePayload(HttpStatus.OK.toString(), userByTokenOrId, "User by given id"));
-	}
-	
-	
-	
-	
-
-	@GetMapping("/test")
-	public ResponseEntity<?> test() {
-		System.out.println("WOKINGGG....");
-
-		User user = new User();
-		user.setId(7);
-
-		List<UserRole> roleByUser = userRoleServices.getRoleByUser(user);
-
-		User userByEmail = userServices.getUserByEmail("subdn@gmail.com");
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(userByEmail);
 	}
 
 }
