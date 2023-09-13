@@ -37,6 +37,13 @@ public class UserSubscribeRepo {
 	}
 	
 	
+	//unsubscribe
+	public void unsubscribe(User subscriber, User producer) {		
+		String sql = "DELETE FROM `user_subscribed` WHERE subscriber_id = ? AND producer_id = ?";	
+		jdbcTemplate.update(sql,subscriber.getId(), producer.getId());
+	}
+	
+	
 	//get my all subscription
 	public List<UserSubscribed> getMySubscriptions(User subscriber) {		
 		String sql = "SELECT * FROM user_subscribed WHERE subscriber_id = ?";		
@@ -64,21 +71,20 @@ public class UserSubscribeRepo {
 	
 	
 	
-	//get my subscribers
-		public List<User> getMySubscriber(User producer){
-			String sql = "SELECT u.id, u.name, u.email, u.token FROM users u JOIN user_subscribed us ON u.id = us.subscriber_id WHERE us.producer_id = ?";
-			List<User> query = jdbcTemplate.query(sql, new UserRowMapper(), producer.getId());
-			
-			List<User> users = new ArrayList<User>();
-			
-			for(User user : query) {
-				User userById = userServices.getUserById(user.getId());
-				users.add(userById);
-			}
-			
-			
-			return users;			
+	// get my subscribers
+	public List<User> getMySubscriber(User producer) {
+		String sql = "SELECT u.id, u.name, u.email, u.token FROM users u JOIN user_subscribed us ON u.id = us.subscriber_id WHERE us.producer_id = ?";
+		List<User> query = jdbcTemplate.query(sql, new UserRowMapper(), producer.getId());
+
+		List<User> users = new ArrayList<User>();
+
+		for (User user : query) {
+			User userById = userServices.getUserById(user.getId());
+			users.add(userById);
 		}
+
+		return users;
+	}
 	
 	
 	
@@ -89,7 +95,7 @@ public class UserSubscribeRepo {
 		User producer2 = userServices.getUserById(producer.getId());
 		
 		String sql = "INSERT INTO `user_subscribed`(`subscriber_id`, `producer_id`) VALUES (?,?)";		
-		int update = jdbcTemplate.update(sql, subscriber.getId(), producer.getId());
+		jdbcTemplate.update(sql, subscriber.getId(), producer.getId());
 		
 		UserSubscribed userSubscribed = new UserSubscribed();
 		userSubscribed.setProducer(producer2);

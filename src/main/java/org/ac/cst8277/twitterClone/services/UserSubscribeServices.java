@@ -21,6 +21,10 @@ public class UserSubscribeServices {
 		return checkUserSubscribed;
 	}
 	
+	public void unsubscribe(User subscriber, User producer) {
+		userSubscriberRepo.unsubscribe(subscriber, producer);
+	}
+	
 	//get my subscriptions
 	public List<UserSubscribed> getMySubscriptions(User subscriber) {
 		return userSubscriberRepo.getMySubscriptions(subscriber);

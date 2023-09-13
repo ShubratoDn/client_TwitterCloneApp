@@ -13,6 +13,7 @@ import org.ac.cst8277.twitterClone.services.UserSubscribeServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -153,5 +154,47 @@ public class SubscriberApiController {
 		
 		return ResponseEntity.ok(new ApiResponse("success", "Successfully subscribed to Producer " + addSubscription.getProducer().getName()));
 	}
+	
+	
+	
+	
+	//unsubscribe to a producer
+	@DeleteMapping("/unsubscribe/subscriber/{subscriberIdOrToken}/producer/{producerIdOrToken}")
+	public ResponseEntity<?> unsubscribe(
+			@PathVariable("subscriberIdOrToken") String subscriberIdOrToken,
+			@PathVariable("producerIdOrToken") String producerIdOrToken
+			){
+		
+		User subscriber = userServices.getUserByTokenOrId(subscriberIdOrToken);
+		if(subscriber == null) {
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "Subscriber's id or token not valid"));
+		}
+		
+		
+		User producer = userServices.getUserByTokenOrId(producerIdOrToken);
+		if(producer == null) {
+			return ResponseEntity.badRequest().body(new ApiResponse(HttpStatus.BAD_REQUEST.toString(), "Producer's id or token not valid"));
+		}
+		
+		
+		
+		//checking if the given producer's id is Actually a producer
+		User checkByRole = userServices.checkByRole(producer, Constant.PRODUCER_ID);
+		if(checkByRole == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("error","Given producer's id/token varification failed"));
+		}
+		
+		
+		// checking if the user is subscribed to the producer
+		UserSubscribed checkUserSubscribed = userSubscribeServices.checkUserSubscribed(subscriber, producer);
+		if (checkUserSubscribed == null) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ApiResponse("error", "You are not a subscriber of Producer \"" + producer.getName() +"\""));
+		}
+		
+		userSubscribeServices.unsubscribe(subscriber, producer);
+		
+		return ResponseEntity.ok(new ApiResponse("success", "Successfully unsubscribed to Producer " + producer.getName()));	
+	}
+	
 
 }
