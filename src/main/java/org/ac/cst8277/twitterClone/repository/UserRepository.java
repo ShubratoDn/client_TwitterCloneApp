@@ -65,6 +65,24 @@ public class UserRepository {
 	}
 	
 	
+	//get User by Token
+	public User getUserByToken(String token) {
+		String sql = "select * from users where token=?";		
+		List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), token);	
+		
+		if(users.size() == 0) {
+			return null;
+		}
+		
+		User user = users.get(0);
+		
+		List<UserRole> roleByUser = userRoleServices.getRoleByUser(user);
+		
+		user.setUserRoles(roleByUser);
+		
+		return user;		
+	}
+	
 	
 	// get user By user id
 	public User getUserById(int id) {
@@ -89,7 +107,7 @@ public class UserRepository {
 	
 	//get Users by Role
 	public List<User> getUsersByRole(String role){
-		String sql = "SELECT u.id, u.name, u.email\r\n"
+		String sql = "SELECT u.id, u.name, u.email, u.token\r\n"
 				+ "FROM users u\r\n"
 				+ "JOIN user_and_role uar ON u.id = uar.user_id\r\n"
 				+ "JOIN user_role ur ON uar.role_id = ur.id\r\n"
